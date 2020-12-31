@@ -64,31 +64,33 @@ app.post('/api/register', (req, res) => {
 app.post('/api/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
+    // Finding the profile of our login
     const sqlFindUser = `SELECT * FROM profiles WHERE username = ?`;
     db.query(sqlFindUser, [username], (err, result) => {
         if (err) {
             console.log("error" + err);
-        } if (result.length > 0) {
-
+        } if (result.length > 0) {  // Make sure result wasn't null
+            // Authenticating the password
             bcrypt.compare(password, result[0].password, (error, response) => {
                 if (response) {
                     req.session.user = result;
                     res.send(result);
-                } else {
+                } else {    // password was wrong
                     res.send("Wrong combination");
                 }
             })
-        } else {
+        } else {    // Result was null
             res.send("User doesn't exist")
         }
     })
 })
 
+// A GET request to check if the user is still logged in based on cookie expiry
 app.get('/api/login', (req, res) => {
     if (req.session.user) {
         res.send({
             loggedIn: true,
-            user: req.session.user
+            user: req.session.user  // Contains the user row information
         })
     } else {
         res.send({ loggedIn: false })

@@ -11,7 +11,8 @@ import Axios from "axios";
 Axios.defaults.withCredentials = true;
 
 function App() {
-
+  
+  // Everytime page refreshes, check if the user is still logged in
   useEffect(() => {
     Axios.get("http://localhost:3001/api/login").then((response) => {
       if (response.data.loggedIn === false) {

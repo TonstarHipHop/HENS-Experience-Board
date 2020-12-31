@@ -4,6 +4,7 @@ import Axios from "axios";
 
 Axios.defaults.withCredentials = true;
 
+// The registeration component, maybe add email?
 function RegisterForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +27,7 @@ function RegisterForm() {
         type="text" name="confirmPassword"
         onChange={(e) => {setConfirmPassword(e.target.value)}}
       />
-      <button onClick={() => submitRegistration(username, password, confirmPassword)}>
+      <button onClick={() => submitRegistration(username, password, confirmPassword)}> 
         Register
       </button>
       
@@ -34,6 +35,7 @@ function RegisterForm() {
   )
 }
 
+// Login component
 function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -57,17 +59,19 @@ function LoginForm() {
   )
 }
 
+// Called when the registration is clicked, and the input information is sent
 function submitRegistration(username, password, confirmPassword) {
-  if (password !== confirmPassword) {
+  if (password !== confirmPassword) { // Check if 2 passwords match
     alert("Password not matching");
     return;
   }
 
+  // Post request to backend to add the new user to database
   Axios.post('http://localhost:3001/api/register', {
     username: username,
     password: password
-  }).then(response => {
-    if (response.data === "error") {
+  }).then(response => {      // See if it was succesfully entered into database
+    if (response.data === "error") { 
       alert("Username taken")
     } else {
       alert("Successfully registered")
@@ -75,19 +79,22 @@ function submitRegistration(username, password, confirmPassword) {
   })
 }
 
+// Called when login button clicked
 function submitLogin(username, password) {
+  // Post request to backend to see if login information is correct
   Axios.post('http://localhost:3001/api/login', {
     username: username,
     password: password
   }).then(response => {
-    if (typeof response.data === "object") {
+    if (typeof response.data === "object") { // Worked if user row was returned
       alert("Success");
-    } else {
+    } else {  // There was some kind of error
       alert(response.data);
     }
   })
 }
 
+// Login page components put together
 function Login() {
   return (
     <div>
