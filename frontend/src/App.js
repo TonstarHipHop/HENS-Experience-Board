@@ -5,25 +5,13 @@ import Login from './components/Login';
 import Projects from './components/Projects';
 import Profiles from './components/Profiles';
 import Homepage from './components/Homepage';
+import User from './components/User';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Axios from "axios";
 Axios.defaults.withCredentials = true;
 
 function App() {
-  
-  // Everytime page refreshes, check if the user is still logged in
-  useEffect(() => {
-    Axios.get("http://localhost:3001/api/login").then((response) => {
-      if (response.data.loggedIn === false) {
-        console.log(false);
-      } else {
-        response.data.user[0].password = null;
-        console.log(response.data.user[0]);
-      }
-    })
-  }, []);
- 
   return (
     <Router>
       <div className="App">
@@ -31,8 +19,9 @@ function App() {
         <Switch>
           <Route path = "/" exact component={Homepage}/>
           <Route path = "/login" component={Login}/>
-          <Route path = "/profiles" component={Profiles}/>
           <Route path = "/projects" component={Projects}/>
+          <Route path = "/profiles" exact component={Profiles}/>
+          <Route path = "/profiles/:user" component = {User}/>
         </Switch>
       </div>
     </Router>

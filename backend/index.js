@@ -97,6 +97,18 @@ app.get('/api/login', (req, res) => {
     }
 })
 
+
+app.get('/api/profiles', (req, res) => {
+    const sqlGetProfiles = 'SELECT * FROM profiles ORDER BY username';
+    db.query(sqlGetProfiles, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
+
 app.listen(3001, () => {
     console.log("running on port 3001");
 
