@@ -1,5 +1,5 @@
 # HENS-Experience-Board
-git clone
-cd backend -> npm install
-cd frontend ->  npm install
+git clone <br />
+cd backend -> npm install <br />
+cd frontend ->  npm install <br />
 Create .env files with credentials sent
