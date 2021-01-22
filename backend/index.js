@@ -109,6 +109,18 @@ app.get('/api/profiles', (req, res) => {
     })
 })
 
+app.post('/api/user', (req, res) => {
+    const username = req.body.username;
+    const sqlGetUser = 'SELECT * FROM profiles WHERE username = ?';
+    db.query(sqlGetUser, [username], (err, result) => {
+        if (err) {
+            console.log("error" + err);
+        } else {
+            res.send(result);
+        }
+    })
+})
+
 app.listen(3001, () => {
     console.log("running on port 3001");
 

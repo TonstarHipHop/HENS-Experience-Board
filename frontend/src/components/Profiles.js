@@ -12,7 +12,6 @@ function Profiles() {
   
   const [Users, setUsers] = useState([]);
   function fetchUsers() {
-    
     Axios.get('http://localhost:3001/api/profiles').then((response) => {
       setUsers(response.data);
     })
@@ -28,6 +27,7 @@ function Profiles() {
       ))}
     </div>
   );
+  
 }
 
 export default Profiles;
