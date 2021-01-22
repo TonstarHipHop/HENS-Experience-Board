@@ -23,7 +23,6 @@ function User({ match }) {
         setUser(response.data[0]);
         delete user.username; // Hide sensitive information
         delete user.password;
-        console.log(user);
       } else {  // There was some kind of error
         alert(response.data);
       }
@@ -36,6 +35,7 @@ function User({ match }) {
       <ul>
         <li> Name: {(user.name) ? user.name : "Unknown"}</li>
         <li> Course: {(user.course) ? user.course : "Unknown"}</li>
+        <li> Year: {(user.year) ? user.year : "Unknown"}</li>
       </ul>
     </div>
   );
