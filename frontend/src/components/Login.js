@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import '../App.css';
 import Axios from "axios";
+import Button from '@material-ui/core/Button';
 
 Axios.defaults.withCredentials = true;
 
@@ -27,9 +28,10 @@ function RegisterForm() {
         type="text" name="confirmPassword"
         onChange={(e) => {setConfirmPassword(e.target.value)}}
       />
-      <button onClick={() => submitRegistration(username, password, confirmPassword)}> 
+      <Button variant='contained'
+        onClick={() => submitRegistration(username, password, confirmPassword)}> 
         Register
-      </button>
+      </Button>
       
     </div>
   )
@@ -71,10 +73,10 @@ function submitRegistration(username, password, confirmPassword) {
     username: username,
     password: password
   }).then(response => {      // See if it was succesfully entered into database
-    if (response.data === "error") { 
-      alert("Username taken")
-    } else {
+    if (typeof response.data === "object") { 
       alert("Successfully registered")
+    } else {
+      alert(response.data);
     }
   })
 }
