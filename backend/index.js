@@ -43,6 +43,10 @@ app.use(session({
 app.post('/api/register', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
+    if (!username || !password) {
+        res.send("Empty fields");
+        return;
+    }
     const sqlInsert = `INSERT INTO profiles (username, password) VALUES(?, ?)`;
 
     // Encrypting the password from registration as hash
@@ -53,7 +57,7 @@ app.post('/api/register', (req, res) => {
         // Try to insert the username and hash into database
         db.query(sqlInsert, [username, hash], (err, result) => {
             if (err)
-                res.send("error");
+                res.send("Username taken");
             if (result)
                 res.send("success");
         });
@@ -64,6 +68,10 @@ app.post('/api/register', (req, res) => {
 app.post('/api/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
+    if (!username || !password) {
+        res.send("Empty fields");
+        return;
+    }
     // Finding the profile of our login
     const sqlFindUser = `SELECT * FROM profiles WHERE username = ?`;
     db.query(sqlFindUser, [username], (err, result) => {
@@ -110,15 +118,29 @@ app.get('/api/profiles', (req, res) => {
 })
 
 app.post('/api/user', (req, res) => {
-    const username = req.body.username;
-    const sqlGetUser = 'SELECT * FROM profiles WHERE username = ?';
-    db.query(sqlGetUser, [username], (err, result) => {
-        if (err) {
-            console.log("error" + err);
-        } else {
-            res.send(result);
-        }
-    })
+    // If user wasn't parsed, we simply want to return user details
+    if (!req.body.user) { 
+        const username = req.body.username;
+        const sqlGetUser = 'SELECT * FROM profiles WHERE username = ?';
+        db.query(sqlGetUser, [username], (err, result) => {
+            if (err) {
+                console.log("error" + err);
+            } else {
+                res.send(result);
+            }
+        })
+    } else {     // User with updated info was parsed so update its row
+        const user = req.body.user;
+        const data = [user.name, user.course, user.year, user.username];
+        const sqlUpdateUser = `UPDATE profiles 
+                                SET name = ?, course = ?, year = ?
+                                WHERE username = ?`
+        db.query(sqlUpdateUser, data, (err, result) => {
+            if (err) res.send(err);
+            else res.send("succes");
+        })
+        
+    }
 })
 
 app.listen(3001, () => {
