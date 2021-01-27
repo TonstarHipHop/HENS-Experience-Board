@@ -8,16 +8,21 @@ import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CheckIcon from '@material-ui/icons/Check';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
 import '../App.css';
+
 
 function User({ match }) {
   const [user, setUser] = useState({});
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [name, setName] = useState("");
+  const [course, setCourse] = useState("");
+  const [year, setYear] = useState("");
+  
   // Fetch profile details on refresh
   useEffect(() => {
-    console.log("hi");
     // Check if we are on our own profile and if we're logged in
     Axios.get("http://localhost:3001/api/login").then((response) => {
       if (response.data.loggedIn) {
@@ -33,13 +38,13 @@ function User({ match }) {
     }).then(response => {
       if (response.data.length > 0) { // Worked if user row was returned
         setUser(response.data[0]);
-        delete user.username; // Hide sensitive information
-        delete user.password;
       } else {  // There was some kind of error
         alert(response.data);
       }
     })
-  }, [match.params.user, user.password, user.username])
+  }, [match.params.user])
+  
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -49,25 +54,53 @@ function User({ match }) {
     setOpen(false);
   };
 
+  const saveChanges = () => {
+    handleClose();
+    if (name) user.name = name;
+    if (course) user.course = course;
+    if (year) user.year = year;
+    Axios.post('http://localhost:3001/api/user', {
+      username: match.params.user,
+      user: user
+    }).then(response => {
+      alert(response.data)
+    })
+
+  }
+
   function EditProfile() {
     return (
-    <div>
+    <form>
       <IconButton color="primary" aria-label="edit profile"
         onClick = {handleClickOpen}>
         <EditIcon />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle id="form-dialog-title">Hello</DialogTitle>
+        <DialogTitle id="form-dialog-title">Edit Profile</DialogTitle>
+        <DialogContent>
+        <TextField style={{ margin: 20}} size="small" variant="outlined"
+          label="Name" defaultValue={user.name}
+          onChange = { (e) => {setName(e.target.value)}}
+        />
+        <TextField style={{ margin: 20}} size = "small" variant="outlined"
+          label="Course" defaultValue={user.course}
+          onChange = { (e) => {setCourse(e.target.value)}}
+        />
+        <TextField style={{ margin: 20}} size = "small" variant="outlined"
+          label="Year" defaultValue={user.year}
+          onChange = { (e) => {setYear(e.target.value)}}
+        />
+        </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             <DeleteIcon/>
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={saveChanges} color="primary">
             <CheckIcon/>
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </form>
     )
   }
 
