@@ -43,11 +43,14 @@ app.use(session({
 app.post('/api/register', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
+    const name = req.body.name;
+    const year = req.body.year;
+    const course = req.body.course;
     if (!username || !password) {
         res.send("Empty fields");
         return;
     }
-    const sqlInsert = `INSERT INTO profiles (username, password) VALUES(?, ?)`;
+    const sqlInsert = `INSERT INTO profiles (username, password, name, year, course) VALUES(?, ?, ?, ?, ?)`;
 
     // Encrypting the password from registration as hash
     bcrypt.hash(password, saltRounds, (err, hash) => { 
@@ -55,7 +58,7 @@ app.post('/api/register', (req, res) => {
             res.send("error");
         }
         // Try to insert the username and hash into database
-        db.query(sqlInsert, [username, hash], (err, result) => {
+        db.query(sqlInsert, [username, hash, name, year, course], (err, result) => {
             if (err)
                 res.send("Username taken");
             if (result)

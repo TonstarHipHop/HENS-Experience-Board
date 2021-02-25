@@ -7,12 +7,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: centre;
+  font-family: 'Brush Script MT', cursive;
 }
 
 .form input {
   width: 300px;
   height: 30px;
   margin: 10px;
+}
+
+.form .MuiTextField-root {
+  width: 300px;
+  height: 5px;
+  margin: 5px;
 }
 
 nav {

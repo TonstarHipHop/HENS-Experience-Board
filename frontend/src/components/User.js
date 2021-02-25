@@ -10,6 +10,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import '../App.css';
 
 
@@ -20,6 +21,8 @@ function User({ match }) {
   const [name, setName] = useState("");
   const [course, setCourse] = useState("");
   const [year, setYear] = useState("");
+  const [isSaving, setSaving] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   
   // Fetch profile details on refresh
   useEffect(() => {
@@ -36,6 +39,7 @@ function User({ match }) {
     Axios.post('http://localhost:3001/api/user', {
       username: match.params.user,
     }).then(response => {
+      setLoading(false);
       if (response.data.length > 0) { // Worked if user row was returned
         setUser(response.data[0]);
       } else {  // There was some kind of error
@@ -55,7 +59,7 @@ function User({ match }) {
   };
 
   const saveChanges = () => {
-    handleClose();
+    setSaving(true);
     if (name) user.name = name;
     if (course) user.course = course;
     if (year) user.year = year;
@@ -63,11 +67,36 @@ function User({ match }) {
       username: match.params.user,
       user: user
     }).then(response => {
+      handleClose();
+      setSaving(false);
       alert(response.data)
     })
 
   }
 
+  // Profile page layout
+  return (
+    <div>
+      <h1>{match.params.user}</h1>
+      <table>
+        <tr>
+          <td>Name</td>
+          <td><Details info={user.name} /></td>
+        </tr>
+        <tr>
+          <td>Course</td>
+          <td><Details info={user.course} /></td>
+        </tr>
+        <tr>
+          <td>Year</td>
+          <td><Details info={user.year} /></td>
+        </tr>
+      </table>
+      {(isMyProfile) ? EditProfile() : null}
+    </div>
+  );
+
+  // Edit Profile Pop Up that only appears if user is logged in
   function EditProfile() {
     return (
     <form>
@@ -95,36 +124,37 @@ function User({ match }) {
           <Button onClick={handleClose} color="primary">
             <DeleteIcon/>
           </Button>
-          <Button onClick={saveChanges} color="primary">
-            <CheckIcon/>
-          </Button>
+          <SaveChangesButton />
         </DialogActions>
       </Dialog>
     </form>
     )
   }
 
-  return (
-    <div>
-      <h1>{match.params.user}</h1>
-      <table>
-        <tr>
-          <td>Name</td>
-          <td>{(user.name) ? user.name : "Unknown"}</td>
-        </tr>
-        <tr>
-          <td>Course</td>
-          <td>{(user.course) ? user.course : "Unknown"}</td>
-        </tr>
-        <tr>
-          <td>Year</td>
-          <td>{(user.year) ? user.year : "Unknown"}</td>
-        </tr>
-      </table>
-      {(isMyProfile) ? EditProfile() : null}
-    </div>
-  );
+  // Loading circle when saving, Check icon when not
+  function SaveChangesButton(props) {
+    if (isSaving) {
+      return (<CircularProgress size={30}/>)
+    } else {
+      return (
+        <Button onClick={saveChanges} color="primary">
+          <CheckIcon/>
+        </Button>)
+    }
+  }
+
+  // Singular profile detail component (shows loading circle if not loaded)
+  function Details(props) {
+    if (isLoading) {
+      return (<CircularProgress size={20} />)
+    } else if (props.info) {
+      return props.info;
+    } else {
+      return "Unknown";
+    }
+  }
 }
+
 
 
 export default User;
