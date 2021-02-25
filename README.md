@@ -8,5 +8,7 @@ Create .env files with credentials sent
 Website for Healthy Eating and Nutrition Society oriented around HR management for projects
 
 To transform this into a more user friendly interface online: 
-![Alt text](./frontend/public/Profile Board.jpg?raw=true)
-![Alt text](./frontend/public/Project Board.jpg?raw=true)
+![Profile board](https://github.com/TonstarHipHop/HENS-Experience-Board/blob/main/frontend/public/Profile%20Board.jpg?raw=true)
+
+
+![Project board](https://github.com/TonstarHipHop/HENS-Experience-Board/blob/main/frontend/public/Project%20Board.jpg?raw=true)
